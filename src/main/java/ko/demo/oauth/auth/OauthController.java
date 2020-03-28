@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.bouncycastle.util.encoders.Base64;
 import org.springframework.http.*;
@@ -14,16 +15,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OauthController {
 
-    private RestTemplate restTemplate;
-    private ObjectMapper objectMapper;
+    private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
 
     @GetMapping("/oauth2/callback")
-    public OauthTokenDto callback(@RequestParam String code) throws JsonProcessingException {
+    public OauthTokenDto callback(@RequestParam String code, HttpServletRequest request) throws Exception {
         System.out.println("code = " + code);
+
+//        if(1==1){
+//            throw new Exception("테스트 에러 입니다");
+//        }
 
         OauthTokenDto token = getToken(code);
         System.out.println("getToken() = " + token);

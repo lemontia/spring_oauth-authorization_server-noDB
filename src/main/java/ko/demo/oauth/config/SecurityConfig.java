@@ -18,9 +18,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/oauth/authorize").permitAll()
                     .antMatchers("/oauth/**", "/oauth2/callback", "/h2-console/*").permitAll()
                 .and()
+
                 .formLogin().and()
                 .httpBasic()
                 ;
+
+//        security
+//                .oauth2Login()
+//                .authorizationEndpoint()
     }
 
 //    @Override
