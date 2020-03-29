@@ -1,5 +1,7 @@
 package ko.demo.oauth.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.logging.log4j.message.ObjectMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,17 +18,22 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Map;
+
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 
-@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 class OauthControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
 
     @Test
@@ -35,9 +42,10 @@ class OauthControllerTest {
         // given
         String clientId = "testClientId";
         String secret = "testSecret";
+        String username = "user";
         MultiValueMap params = new LinkedMultiValueMap();
         params.add("grant_type", "password");
-        params.add("username", "user");
+        params.add("username", username);
         params.add("password", "pass");
 
 
@@ -54,5 +62,28 @@ class OauthControllerTest {
 
         // then
         Assertions.assertThat(contentAsString).contains("access_token").contains("refresh_token");
+
+        Map map = objectMapper.readValue(contentAsString, Map.class);
+        System.out.println("map = " + map);
+
+
+        // token 검토
+        String accessToken = (String) map.get("access_token");
+        String url = "/oauth/check_token?token=" + accessToken;
+
+        MvcResult mvcResultApi = mockMvc.perform(get(url)).andReturn();
+
+        System.out.println("mvcResultApi = " + mvcResultApi);
+        System.out.println("mvcResultApi.getResponse().getContentAsString() = " + mvcResultApi.getResponse().getContentAsString());
+        String checkTokenStr = mvcResultApi.getResponse().getContentAsString();
+
+        Map checkTokenMap = objectMapper.readValue(checkTokenStr, Map.class);
+        boolean active = (boolean) checkTokenMap.get("active");;
+        String user_name = (String) checkTokenMap.get("user_name");
+        String client_id = (String) checkTokenMap.get("client_id");
+
+        Assertions.assertThat(active).isEqualTo(true);
+        Assertions.assertThat(user_name).isEqualTo(username);
+        Assertions.assertThat(client_id).isEqualTo(clientId);
     }
 }

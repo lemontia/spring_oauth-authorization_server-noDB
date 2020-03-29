@@ -1,4 +1,4 @@
-package ko.demo.oauth.config;
+package ko.demo.oauth.config.oauth2.authorization;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class AutorizationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity security) throws Exception {
         security
@@ -18,21 +18,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers("/oauth/authorize").permitAll()
                     .antMatchers("/oauth/**", "/oauth2/callback", "/h2-console/*").permitAll()
                 .and()
-
                 .formLogin().and()
                 .httpBasic()
                 ;
-
-//        security
-//                .oauth2Login()
-//                .authorizationEndpoint()
     }
-
-//    @Override
-//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.inMemoryAuthentication()
-//                .withUser("user")
-//                .password("{noop}pass")
-//                .roles("USER");
-//    }
 }

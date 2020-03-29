@@ -1,4 +1,4 @@
-package ko.demo.oauth.config;
+package ko.demo.oauth.config.oauth2.authorization;
 
 import ko.demo.oauth.auth.TestUser;
 import org.springframework.context.annotation.Configuration;
