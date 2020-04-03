@@ -1,4 +1,4 @@
-package ko.demo.oauth.config.oauth2.authorization;
+package ko.demo.oauth.config.oauth2;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 @EnableWebSecurity
-public class AutorizationSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfg extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity security) throws Exception {
         security
@@ -22,4 +22,6 @@ public class AutorizationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic()
                 ;
     }
+
+
 }
